@@ -12,7 +12,7 @@ def prep_outdir(outdir, delete_existing=False):
             # delete existing result data, will be overwritten anyway
             shutil.rmtree(outdir)
     if not os.path.isdir(outdir):
-        os.mkdir(outdir)
+        os.makedirs(outdir)
     return outdir
 
 def store_results(outdir, filename_prefix, dataframes=None, names=None, saveplot=True):

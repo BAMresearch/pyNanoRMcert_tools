@@ -67,9 +67,9 @@ def datafileBasename(filename):
     return os.path.splitext(os.path.basename(filename))[0].split('[')[0]
 
 @loggg
-def f_fit_data(df_data, params=None, distrib=None, Sample_ID=None, SAXS_ID=None,
+def f_fit_data(df_data, outdir, params=None, distrib=None, Sample_ID=None, SAXS_ID=None,
                filename=None, date_SAXS=None, plot_start=True, fit=True,
-               eps=False, save_fit=True, dir_figures=None):
+               eps=False, save_fit=True):
     """function for curve fitting"""
     #print('filename:', filename)
     print('distribution_selected:', distrib)
@@ -111,18 +111,17 @@ def f_fit_data(df_data, params=None, distrib=None, Sample_ID=None, SAXS_ID=None,
     plt.savefig(plotbuf)
 
     if save_fit:
-        dir_figures = dir_figures # directory for storage of results
+        # Directory for storage of figures and results
+        outdir = os.path.abspath(outdir)
         # basename of the files to be stored
-        plot_name = datafileBasename(filename)
-        name_of_plot = os.path.join(dir_figures, plot_name + '.png')
+        base_name = datafileBasename(filename)
+        fnplot = os.path.join(outdir, base_name + '.png')
         print("Storing results:")
-        print("    plot:  ", name_of_plot)
-        plt.savefig(name_of_plot)
-        file_fited_data = os.path.join(dir_figures, plot_name + 'fit.xlsx')
-        print("    fit:   ", file_fited_data)
-        df_data.to_excel(file_fited_data,
-                        index=False)
-
+        print("    plot:  ", fnplot)
+        plt.savefig(fnplot)
+        fnfit = os.path.join(outdir, base_name + 'fit.xlsx')
+        print("    fit:   ", fnfit)
+        df_data.to_excel(fnfit, index=False)
         try: # save the fit parameteres
             d_res={'Sample_ID': Sample_ID,
                    'SAXS_ID': SAXS_ID,
@@ -139,9 +138,9 @@ def f_fit_data(df_data, params=None, distrib=None, Sample_ID=None, SAXS_ID=None,
             d_res['redchi']=out.redchi
             df_res=pd.DataFrame(d_res)
 
-            file_fitpars = os.path.join(dir_figures, plot_name + 'fitpar.xlsx')
-            print("    params:", file_fitpars)
-            df_res.to_excel(file_fitpars, index=False)
+            fnpars = os.path.join(outdir, base_name + 'fitpar.xlsx')
+            print("    params:", fnpars)
+            df_res.to_excel(fnpars, index=False)
 
         except ValueError:
             print('something went wrong with the out.params')
@@ -179,6 +178,8 @@ def fit_files(filelist, outdir, qrange, distrib='lognormal', initParams=None, nt
               date_SAXS=None, read_csv_args=None):
     """Processes *filelist* sequentially in a single thread (*nthreads*=1)
     or in parallel (*nthread*=None)."""
+    # Directory for storage of figures and results
+    outdir = os.path.abspath(outdir)
     # explicitly add all arguments to maintain the ordering
     allargs = [(fn, i, len(filelist), outdir, qrange, distrib, initParams,
                 Sample_IDs[i] if Sample_IDs else None,
@@ -275,17 +276,17 @@ def fit_file(fn, i, count, outdir, qrange, distrib=None, initParams=None,
 
         ## 4 fit the binned data
         print("Fitting binned data to the model for parameter estimates ...")
-        df_binned, out, plot_binned = f_fit_data(df_binned, params=initParams, distrib=distrib,
+        df_binned, out, plot_binned = f_fit_data(df_binned, outdir, params=initParams, distrib=distrib,
                     Sample_ID=Sample_ID, SAXS_ID=SAXS_ID, filename=fn,
-                    plot_start=False, fit=True, eps=None, save_fit=False, dir_figures=outdir)
+                    plot_start=False, fit=True, eps=None, save_fit=False)
         #out.params.pretty_print() # Show actual fit params, for debugging
 
         # 5. Fit the data
         print("Fitting full data to the model with estimates as initial parameters ...")
-        df_data, out, plot_data = f_fit_data(df_data, params=out.params, distrib=distrib,
+        df_data, out, plot_data = f_fit_data(df_data, outdir, params=out.params, distrib=distrib,
                     Sample_ID=Sample_ID, SAXS_ID=SAXS_ID, filename=fn,
                     date_SAXS=date_SAXS,
-                    plot_start=False, fit=True, eps=None, save_fit=True, dir_figures=outdir)
+                    plot_start=False, fit=True, eps=None, save_fit=True)
         #out.params.pretty_print() # Show resulting fit params, for debugging
     # finally, print all output at once to prevent interweaved messages
     return outbuf, out, (plot_binned, plot_data)

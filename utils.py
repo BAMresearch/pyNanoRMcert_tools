@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 # utils.py
 
-import os
+import os, shutil
 import matplotlib.pyplot as plt
 
-def f_makedir_figures(dir_figures):
+def prep_outdir(outdir, delete_existing=False):
     """Create a directory for storage of figures and fit curves"""
-    try:
-        # Create target Directory
-        os.mkdir(dir_figures)
-        print("Directory " , dir_figures ,  " created ") 
-    except FileExistsError:
-        print("Directory " , dir_figures ,  " already exists")
+    outdir = os.path.abspath(outdir)
+    if os.path.isdir(outdir):
+        if delete_existing:
+            # delete existing result data, will be overwritten anyway
+            shutil.rmtree(outdir)
+    if not os.path.isdir(outdir):
+        os.mkdir(outdir)
+    return outdir
 
 def store_results(outdir, filename_prefix, dataframes=None, names=None, saveplot=True):
     """Stores the given tuple or list of pandas.DataFrames to excel files (.xlsx)

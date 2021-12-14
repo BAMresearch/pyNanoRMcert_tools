@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # fitting.py
 
-import glob, os, sys, re
+import glob, os, sys, re, io, time
+from contextlib import redirect_stdout
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,9 +12,9 @@ from .utils import loggg
 # scattering functions
 from .scattering_models import f_lognormal_sphere, f_gaussian_sphere
 # data reading/parsing functions
-from pytools.analysis_tools_github import readdata
+from .analysis_tools_github import readdata
 # read SAXS data binning helpers
-from pytools.SAXS_data_binning import f_SAXS_data_binning_df
+from .SAXS_data_binning import f_SAXS_data_binning_df
 # optimization functions
 from lmfit import minimize, Parameters, report_fit
 
@@ -152,9 +153,6 @@ def f_fit_data(df_data, params=None, distrib=None, Sample_ID=None, SAXS_ID=None,
     plotbuf.close()
     return df_data, out, plotimg
 
-import io, time
-from pytools.SAXS_data_binning import f_SAXS_data_binning_df
-
 def showBufferedPlots(plots):
     """Show plots provided as numpy array raster images (from background threads)"""
     # creating a figure where to plot to
@@ -231,7 +229,6 @@ def fit_file(fn, i, count, outdir, qrange, distrib=None, initParams=None,
     """*date_SAXS*: Allows to override the measurement date if not readable from file.
     *buffer_stdout*: Store text output in a buffer to print it later along with the plots.
     """
-    from contextlib import redirect_stdout
     out, outbuf = None, sys.stdout
     if buffer_stdout:
         outbuf = io.StringIO()

@@ -1,5 +1,6 @@
 # collection of my definitions
 
+
 def configMatplotlib(plt):
     plt.rcParams.update({'axes.titlesize': 16})
     plt.rcParams.update({'axes.labelsize': 16})
@@ -10,6 +11,18 @@ def configMatplotlib(plt):
     plt.rcParams["legend.frameon"] = False
     plt.rcParams["legend.fontsize"] = 16
     plt.rcParams['figure.figsize'] = [1*6.4,4.8]
+
+def configMatplotlibSmall(plt):
+    plt.rcParams.update({'axes.titlesize': 12})
+    plt.rcParams.update({'axes.labelsize': 12})
+    plt.rcParams.update({'lines.linewidth': 1.5})
+    plt.rcParams.update({'lines.markersize':5})
+    plt.rcParams.update({'xtick.labelsize': 10})
+    plt.rcParams.update({'ytick.labelsize': 10})
+    plt.rcParams.update({"text.usetex" : False})
+    plt.rcParams.update({'mathtext.default':'regular'})
+    plt.rcParams["legend.fontsize"] = 10
+    plt.rcParams['figure.figsize'] = [8.5/2.54,8.5/2.54]
 
 
 class BAMColors:

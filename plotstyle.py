@@ -33,10 +33,10 @@ class BAMColors:
     blue_3   = '#007599'
     blue_4   = '#00556E'
     #--- The four color accents of green ---
-    green    = '#8CB40F'
-    green_2  = '#82A532'
-    green_3  = '#5A8C32'
-    green_4  = '#377832'
+    green    = '#73E600'
+    green_2  = '#66CC14'
+    green_3  = '#47B312'
+    green_4  = '#2E990F'
     #--- The four color accents of yellow ---
     yellow   = '#FFDC00'
     yellow_2 = '#FAB900'

@@ -21,7 +21,8 @@ def f_comparison_with_certified_value(c_m=3., u_m=0.1, c_CRM=3.1, u_CRM=0.05):
     U_Delta = 2*u_Delta
 
     # Normalized error (or En number, see eq. B.5 in EN ISO/IEC 17043:2010 )
-    U_m = 2*u_m; U_CRM = 2*u_CRM
+    U_m = 2*u_m
+    U_CRM = 2*u_CRM
     E_n = (c_m-c_CRM)/np.sqrt(U_m**2 + U_CRM**2)
 
     df = pd.DataFrame({

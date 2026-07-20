@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # utils.py
 
-import os, shutil
+import os
+import shutil
 import matplotlib.pyplot as plt
 
 def prep_outdir(outdir, delete_existing=False):

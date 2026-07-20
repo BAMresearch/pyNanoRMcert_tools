@@ -42,7 +42,7 @@ def f_calc_derived_pars(df, SASfit=False, distribution='lognormal', intensity_un
     elif intensity_unit == '1/m':
         k = 1e40
     else:
-        raise NotImplemented
+        raise NotImplementedError
     df['N1'] = k*df['N']
     df['uN1'] = k*df['uN']
     # conversion factor for number concentration in mol/cm^3
@@ -69,14 +69,14 @@ def f_calc_derived_pars(df, SASfit=False, distribution='lognormal', intensity_un
         df['k_lognormal'] = k_lognormal 
         k_distribution = k_lognormal
     else:
-        raise NotImplemented
+        raise NotImplementedError
     
     df['v'] = k_distribution*4./3.*np.pi*df['Rm']**3
     try:
         variance21 = (4*np.pi*df['Rm']**2*k_distribution)**df['uRm']**2
         variance22 = (12*np.pi*df['si']*df['Rm']**3*k_distribution)**2 * df['usi']**2
         df['uv'] = np.sqrt(variance21+variance22)
-    except:
+    except KeyError:
         df['uv'] = 0.
     
     # Mass concentration of particles
@@ -89,7 +89,7 @@ def f_calc_derived_pars(df, SASfit=False, distribution='lognormal', intensity_un
         df['uc1v'] =  k_c*df['rho'] * df['N1']* df['uv'] * fac_avo
         # combinded uncertainty
         df['uc1'] = np.sqrt(df['uc1N1']**2+df['uc1v']**2)
-    except:
+    except KeyError:
         df['uc1'] = 0.
 
     return df

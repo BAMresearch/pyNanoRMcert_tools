@@ -18,7 +18,7 @@ def f_SAXS_data_binning_df(df,
 
     #print('length of q1-vector is ', len(q)) # sometimes this needs to be checked
     # ---------- Rebinning of the data ---------------
-    eMin = 0.01 # minium error of the intensity values is 1%
+    #eMin = 0.01 # minium error of the intensity values is 1%
     binArgs = {"qMin": qMin,   # Input: lower limit of q-values
                "qMax": qMax,   # Input: upper limit of q-values
                "numBins": numBins, # Input: number of suitable bins
@@ -38,7 +38,7 @@ def f_SAXS_data_binning_df(df,
     reBinning.cleanup()
     df0 = pd.DataFrame({'q': q1, 'I': I1, 'e': IError1})
     df1 = pd.DataFrame({'q': reBinning.QBin, 'I': reBinning.IBin, 'e': reBinning.EBin})
-    if binning == False:
+    if not binning:
         df1 = df0
     
     def config_axis(ax, sample_name):
@@ -54,7 +54,7 @@ def f_SAXS_data_binning_df(df,
     BAM_black_15 = '#ccdbdb'
     marker_style_blue = dict(color=BAM_blue, linestyle='', marker='o', fillstyle='none',
                              markersize=5, markeredgewidth=1, markeredgecolor=BAM_blue)
-    if plot_data == True:
+    if plot_data:
         plt.rcParams['figure.figsize'] = [1*6.4,4.8]
         fig, ax = plt.subplots()
         ax.errorbar('q', 'I', 'e', data=df0 , color=BAM_black_15, ls=':', label="data")

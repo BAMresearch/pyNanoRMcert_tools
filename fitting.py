@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 # fitting.py
 
-import glob, os, sys, re, io, time
+import glob
+import os
+import sys
+import re
+import io
+import time
 from contextlib import redirect_stdout
 import numpy as np
 import pandas as pd
@@ -16,7 +21,7 @@ from jupyter_analysis_tools import readdata
 # read SAXS data binning helpers
 from .SAXS_data_binning import f_SAXS_data_binning_df
 # optimization functions
-from lmfit import minimize, Parameters, report_fit
+from lmfit import minimize, Parameters
 
 def f_resid(params, q, data=None, eps=None, distrib='lognormal'):
     """SAXS of Gaussian or lognormal size distribution of spheres 
@@ -25,12 +30,12 @@ def f_resid(params, q, data=None, eps=None, distrib='lognormal'):
     Fit Specifying Different Reduce Functions
     """
     N = params['N'].value    # scaling factor
-    Rm= params['Rm'].value   # median radius
-    si= params['si'].value   # size distribution width in nm for Gaussian, no unit for lognormal
+    Rm = params['Rm'].value   # median radius
+    si = params['si'].value   # size distribution width in nm for Gaussian, no unit for lognormal
     try:
-        bkg= params['bkg'].value # constant scattering background
-    except:
-        bkg=0.
+        bkg = params['bkg'].value # constant scattering background
+    except KeyError:
+        bkg = 0.
     
     # --- scattering contribution of spheres with size distribution ----
     assert distrib in ('lognormal', 'gaussian')
@@ -86,7 +91,7 @@ def f_fit_data(df_data, outdir, params=None, distrib=None, Sample_ID=None, SAXS_
         ax.set(xscale= 'log', yscale='log', 
                 xlabel= r'$q$ (nm$^{-1}$)',ylabel= r'Intensity', title='{}'.format(filename),)
         ax.legend()
-        plt.show();
+        plt.show()
         
     if not fit:
         return
@@ -132,7 +137,8 @@ def f_fit_data(df_data, outdir, params=None, distrib=None, Sample_ID=None, SAXS_
             for key in out.params.keys():
                 d_res[key]=[out.params[key].value]
                 d_res['u'+key]=[out.params[key].stderr]
-                if out.params[key].stderr==None: d_res['u'+key] =0.
+                if out.params[key].stderr is None:
+                    d_res['u'+key] = 0.
 
             # reduced chi^2
             d_res['redchi']=out.redchi
@@ -211,14 +217,14 @@ def fit_files(filelist, outdir, qrange, distrib='lognormal', initParams=None, nt
         showBufferedPlots(plots)
         # show parameter table from 'eval_file()'
         if out:
-            display(out.params)
+            print(out.params)
 
 def f_get_date_measurement(file_selected):
     """Read the date at which the measurement was performed from a pdh-file of the SAXSess data"""
     #print('filename is', file_selected)
     with open(file_selected) as fd:
         content = fd.read()
-        start=content.index(f'"DateTime" type="DateTime" db="P">')
+        start=content.index('"DateTime" type="DateTime" db="P">')
         end = content.index("</value>",start)
         date_SAXS = (content[start:end])
         date_SAXS = date_SAXS.split(">")[1].split("T")[0]

@@ -1,9 +1,7 @@
 import numpy as np
-import pandas as pd
-import matplotlib
 import matplotlib.pyplot as plt
 
-from .my_definitions_matplotlib import BAMColors
+from .plotstyle import BAMColors
 
 def f_trapzSim(xvec, yvec, yvecErr):
     """Function to integrate data including an estimate of the uncertainty"""
@@ -47,4 +45,3 @@ def f_Invariant(df, bkg=2.5e-1,**kwargs):
     print('Invariant after background subtraction')
     area, areaStd = f_trapzSim(df['q'], df['q2Ibkg'], df['q2Ie'])
     return area, areaStd
-

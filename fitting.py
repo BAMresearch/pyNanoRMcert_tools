@@ -12,7 +12,7 @@ from .utils import loggg
 # scattering functions
 from .scattering_models import f_lognormal_sphere, f_gaussian_sphere
 # data reading/parsing functions
-from .analysis_tools_github import readdata
+from jupyter_analysis_tools import readdata
 # read SAXS data binning helpers
 from .SAXS_data_binning import f_SAXS_data_binning_df
 # optimization functions

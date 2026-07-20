@@ -1,5 +1,5 @@
 import numpy as np
-from numpy import sin, cos, sqrt, exp, log, pi
+from numpy import sin, cos
 import scipy.integrate as integrate 
 from scipy.integrate import quad_vec
 from .distributions import f_lognormal, f_gaussian

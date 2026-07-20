@@ -1,6 +1,4 @@
-from .analysis_tools_github.reBin import reBin
-from .analysis_tools_github import readdata # read pdh-files e.g. from the SAXSess instrument
-import numpy as np
+from jupyter_analysis_tools.binning import reBin
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -11,6 +9,7 @@ def f_SAXS_data_binning_df(df,
                            scaling="logarithmic",
                            numBins=100,
                            plot_data=True,
+                           plot_title="SAXS data binning",
                            binning=True):
     """Function for binning SAXS data provided as Pandas data frame.
     *k_error*: allows for compensation of over or underestimated uncertainties.
@@ -29,32 +28,36 @@ def f_SAXS_data_binning_df(df,
                "minE": 1e-10}
 
     # binning:
-    dfRebin = reBin(Q = q1, I = I1, E = IError1, **binArgs)
-    dfRebin.validate()
-    dfRebin.defineBinEdges()
-    dfRebin.binning1D()
-    dfRebin.cleanup()
+    reBinning = reBin(**binArgs)
+    reBinning.Q = q1
+    reBinning.I = I1
+    reBinning.E = IError1
+    reBinning.validate()
+    reBinning.defineBinEdges()
+    reBinning.binning1D()
+    reBinning.cleanup()
     df0 = pd.DataFrame({'q': q1, 'I': I1, 'e': IError1})
-    df1 = pd.DataFrame({'q': dfRebin.QBin, 'I': dfRebin.IBin, 'e': dfRebin.EBin})
-    if binning == False: df1=df0
+    df1 = pd.DataFrame({'q': reBinning.QBin, 'I': reBinning.IBin, 'e': reBinning.EBin})
+    if binning == False:
+        df1 = df0
     
     def config_axis(ax, sample_name):
         """appearance of an axis of a plot"""
         ax.set(
             xscale = 'log',
             yscale = 'log',
-            title = '{}'.format(sample_name),
+            title = sample_name,
             xlabel = r'$q$ (nm$^{-1}$)',
             ylabel = 'Intensity',)
         ax.legend()
     BAM_blue     = '#00ffff' # primary color
     BAM_black_15 = '#ccdbdb'
     marker_style_blue = dict(color=BAM_blue, linestyle='', marker='o', fillstyle='none',
-                    markersize=5, markeredgewidth=1, markeredgecolor=BAM_blue)
+                             markersize=5, markeredgewidth=1, markeredgecolor=BAM_blue)
     if plot_data == True:
         plt.rcParams['figure.figsize'] = [1*6.4,4.8]
         fig, ax = plt.subplots()
         ax.errorbar('q', 'I', 'e', data=df0 , color=BAM_black_15, ls=':', label="data")
         ax.errorbar('q', 'I', 'e', data=df1,  **marker_style_blue, label="data_bin")
-        config_axis(ax, sample_selected)
+        config_axis(ax, plot_title)
     return df1
